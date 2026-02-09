@@ -15,25 +15,27 @@ dotenv.config();
 const app = express();
 
 //middleware
-// Define your allowed origins
 const allowedOrigins = [
-    'http://localhost:5173', // Your local React/Vite dev port
-    'https://frontend-cms-ten.vercel.app' // Your actual Vercel frontend URL
-];
-
-app.use(cors({
+    'http://localhost:5173',
+    'https://frontend-cms-ten.vercel.app', // Your main production URL
+    /\.vercel\.app$/ // This ALLOWS ALL Vercel subdomains (fixes the preview link error!)
+  ];
+  
+  app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl) 
-        // or check if the origin is in our allowed list
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
+      // Allow requests with no origin (like mobile apps) or matching origins
+      if (!origin || allowedOrigins.some(o => typeof o === 'string' ? o === origin : o.test(origin))) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
     },
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-    credentials: true
-}));
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  }));
+  
+  // Add this to handle the "Preflight" OPTIONS request specifically
+  app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
