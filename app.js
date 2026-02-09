@@ -15,32 +15,19 @@ dotenv.config();
 const app = express();
 
 //middleware
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://frontend-cms-ten.vercel.app', // Your main production URL
-    /\.vercel\.app$/ // This ALLOWS ALL Vercel subdomains (fixes the preview link error!)
-  ];
-  
-  app.use(cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps) or matching origins
-      if (!origin || allowedOrigins.some(o => typeof o === 'string' ? o === origin : o.test(origin))) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+app.use(cors({
+    origin: 'https://frontend-cms-ebon.vercel.app',
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   }));
-  
-  // Add this to handle the "Preflight" OPTIONS request specifically
   app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 
 //test route
 app.get('/', (req, res) => {
