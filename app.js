@@ -16,28 +16,20 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 
-// CORS configuration
-const allowedOrigins = [
-    'https://frontend-cms-ebon.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:5173'
-];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            return callback(new Error('CORS policy violation'), false);
-        }
-        return callback(null, true);
-    },
+const corsOptions = {
+    origin: [
+        'https://frontend-cms-ebon.vercel.app',
+        'http://localhost:3000',
+        'http://localhost:5173'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
 
-// REMOVE THIS LINE - it's causing the crash:
-// app.options('*', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // 🔥 REQUIRED for preflight
+
 
 // Middleware
 app.use(express.json());
