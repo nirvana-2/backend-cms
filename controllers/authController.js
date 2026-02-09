@@ -9,6 +9,8 @@ const generateToken = (id) => {
 
 const registerUser = async (req, res) => {
     const { name, email, password, phone, role } = req.body;
+    console.log("MONGO_URI:", process.env.MONGO_URI ? "FOUND" : "MISSING");
+
     const userExists = await User.findOne({ $or: [{ email }, { phone }] });
     if (userExists) {
         res.status(400);
