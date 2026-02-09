@@ -15,22 +15,13 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 const app = express();
-
-const corsOptions = {
-    origin: [
-        'https://frontend-cms-ebon.vercel.app',
-        'http://localhost:3000',
-        'http://localhost:5173'
-    ],
+// CORS - MUST BE FIRST
+app.use(cors({
+    origin: 'https://frontend-cms-ebon.vercel.app',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // 🔥 REQUIRED for preflight
-
-
+}));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
