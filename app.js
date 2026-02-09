@@ -30,7 +30,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 
 //test route
-app.get('/', (req, res) => {
+app.get('/test', (req, res) => {
     res.json({ message: 'Backend is working!', cors: 'enabled' });
 });
 //routes
