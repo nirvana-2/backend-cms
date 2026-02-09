@@ -1,4 +1,4 @@
-const connectDB = require('../database/db');
+const connectDB = require('../config/db');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
