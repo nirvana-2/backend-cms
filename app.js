@@ -9,7 +9,10 @@ const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 
 const app = express();
 
