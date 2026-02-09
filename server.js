@@ -1,22 +1,29 @@
 const app = require('./app');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
-//load env variables
+
 dotenv.config();
-//connect to database
-connectDB();
-//define port
-const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+// Connect to database before starting
+const startServer = async () => {
+    try {
+        await connectDB();
+        
+        // Only start server locally, not on Vercel
+        if (process.env.VERCEL !== '1') {
+            const PORT = process.env.PORT || 5000;
+            app.listen(PORT, () => {
+                console.log(`🚀 Server running on port ${PORT}`);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to connect to database:', error);
+        if (process.env.VERCEL !== '1') {
+            process.exit(1);
+        }
+    }
+};
 
-//handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-    console.log(`Error: ${err.message}`);
-    console.log('Shutting down server due to unhandled rejection');
-    server.close(() => {
-        process.exit(1);
-    });
-});
+startServer();
+
+module.exports = app;
