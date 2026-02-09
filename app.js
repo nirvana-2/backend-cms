@@ -15,9 +15,23 @@ dotenv.config();
 const app = express();
 
 //middleware
+// Define your allowed origins
+const allowedOrigins = [
+    'http://localhost:5173', // Your local React/Vite dev port
+    'https://frontend-cms-ten.vercel.app' // Your actual Vercel frontend URL
+];
+
 app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'PUT', 'POST', 'DELETE'],
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl) 
+        // or check if the origin is in our allowed list
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true
 }));
 app.use(express.json());
