@@ -31,7 +31,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 //test route
 app.get('/', (req, res) => {
-    res.send('CMS API is running');
+    res.json({ message: 'Backend is working!', cors: 'enabled' });
 });
 //routes
 app.use('/api/auth', authRoutes);
