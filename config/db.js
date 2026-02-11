@@ -9,10 +9,15 @@ const connectDB = async () => {
     }
 
     try {
+        const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
+        if (!uri) {
+            throw new Error('MongoDB connection string (MONGO_URI) is missing in environment variables');
+        }
+        
         // Set mongoose buffering to false for serverless
         mongoose.set('bufferCommands', false);
         
-        const conn = await mongoose.connect(process.env.MONGO_URI, {
+        const conn = await mongoose.connect(uri, {
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
         });

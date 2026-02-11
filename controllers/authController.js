@@ -3,11 +3,12 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (id) => {
-    if (!process.env.JWT_SECRET) {
-        throw new Error("JWT_SECRET is not defined");
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        throw new Error("JWT_SECRET is missing in environment variables");
     }
 
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, secret, {
         expiresIn: '30d'
     });
 };
