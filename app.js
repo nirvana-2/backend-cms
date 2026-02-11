@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const path = require('path');
+
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const foodRoutes = require('./routes/foodRoutes');
@@ -10,35 +11,34 @@ const cartRoutes = require('./routes/cartRoutes');
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 
 const app = express();
+
 // CORS Configuration
 const allowedOrigins = [
-    "https://frontend-cms-ebon.vercel.app",
-    "https://frontend-2hrlgbbpa-saman-shakyas-projects-f0a62889.vercel.app",
-    "http://localhost:5173",
-    "http://localhost:3000"
+  "https://frontend-cms-ebon.vercel.app",
+  "https://frontend-2hrlgbbpa-saman-shakyas-projects-f0a62889.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000"
 ];
 
 const corsOptions = {
-    origin: function (origin, callback) {
-        // allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    optionsSuccessStatus: 200
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow requests with no origin
+    if (allowedOrigins.some(o =>
+      typeof o === "string" ? o === origin : o.test(origin)
+    )) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"), false);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Explicitly handle preflight requests
 
-// Explicitly handle preflight requests
-app.options('*', cors(corsOptions));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -48,7 +48,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Test route
 app.get('/', (req, res) => {
-    res.send('CMS API is running');
+  res.send('CMS API is running');
 });
 
 // Routes
