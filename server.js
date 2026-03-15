@@ -10,15 +10,15 @@ const startServer = async () => {
         await connectDB();
         
         // Only start server locally, not on Vercel
-        if (process.env.VERCEL !== '1') {
+        if (true) {
             const PORT = process.env.PORT || 5000;
-            app.listen(PORT, () => {
+            app.listen(PORT, '0.0.0.0', () => {
                 console.log(`🚀 Server running on port ${PORT}`);
             });
         }
     } catch (error) {
         console.error('Failed to connect to database:', error);
-        if (process.env.VERCEL !== '1') {
+        if (true) {
             process.exit(1);
         }
     }
